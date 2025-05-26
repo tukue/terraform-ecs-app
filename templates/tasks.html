@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tasks - Daily Life Helper</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .task {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .task h3 {
+            margin-top: 0;
+        }
+        .priority {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            color: white;
+        }
+        .priority-1 { background-color: #28a745; }
+        .priority-2 { background-color: #17a2b8; }
+        .priority-3 { background-color: #ffc107; color: #333; }
+        .priority-4 { background-color: #fd7e14; }
+        .priority-5 { background-color: #dc3545; }
+        .completed { text-decoration: line-through; }
+        .btn {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 8px 12px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        .home-btn {
+            background-color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tasks</h1>
+    
+    {% if tasks %}
+        {% for task in tasks %}
+            <div class="task {% if task.completed %}completed{% endif %}">
+                <h3>{{ task.title }}</h3>
+                <span class="priority priority-{{ task.priority }}">Priority: {{ task.priority }}</span>
+                {% if task.due_date %}
+                    <p>Due: {{ task.due_date.strftime('%Y-%m-%d %H:%M') }}</p>
+                {% endif %}
+                {% if task.description %}
+                    <p>{{ task.description }}</p>
+                {% endif %}
+                <p>Status: {% if task.completed %}Completed{% else %}Pending{% endif %}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No tasks found. Create some tasks using the API.</p>
+    {% endif %}
+    
+    <a href="/" class="btn home-btn">Back to Home</a>
+    <a href="/docs" class="btn">API Documentation</a>
+</body>
+</html>
