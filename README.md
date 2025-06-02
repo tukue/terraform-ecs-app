@@ -10,6 +10,86 @@ The infrastructure is organized into modules:
 - **Security Module**: Security groups and IAM roles
 - **ECS Module**: ECS cluster, task definition, service, and ECR repository
 
+## Deploying the Infrastructure
+
+Follow these steps to deploy the infrastructure:
+
+1. Initialize Terraform:
+   ```bash
+   terraform init
+   ```
+
+2. Review the execution plan:
+   ```bash
+   terraform plan
+   ```
+
+3. Apply the changes to create the infrastructure:
+   ```bash
+   terraform apply
+   ```
+
+4. When prompted, type `yes` to confirm the deployment.
+
+5. After deployment, you can view the outputs:
+   ```bash
+   terraform output
+   ```
+
+6. To destroy the infrastructure when no longer needed:
+   ```bash
+   terraform destroy
+   ```
+
+## Remote State Management
+
+This project separates remote state management from the main Terraform configuration. This allows you to:
+1. Start with local state for development
+2. Optionally use remote state for team collaboration
+
+### Using Local State (Default)
+
+By default, the project uses local state. To ensure you're using local state:
+
+```bash
+# Make the script executable
+chmod +x use-local-state.sh
+
+# Run the script
+./use-local-state.sh
+```
+
+### How to Use Remote State
+
+This project provides scripts to easily switch between local and remote state:
+
+#### Using Local State (Default)
+```bash
+# Make the script executable
+chmod +x use-local-state.sh
+
+# Switch to local state
+./use-local-state.sh
+terraform init
+terraform plan
+```
+
+#### Setting Up Remote State
+```bash
+# Make the scripts executable
+chmod +x create-backend.sh
+chmod +x use-remote-state.sh
+
+# Create the required AWS resources
+./create-backend.sh
+
+# Configure Terraform to use remote state
+./use-remote-state.sh
+terraform plan
+```
+
+You can switch between local and remote state at any time using these scripts.
+
 ## Modules
 
 ### Network Module
@@ -34,6 +114,18 @@ Located in `modules/ecs`, this module creates:
 - ECS cluster
 - ECS task definition
 - ECS service
+
+## Application Description
+
+This project deploys a Daily Task Manager application that helps users organize their daily activities. The application features:
+
+- Task creation, retrieval, updating, and deletion
+- Priority levels (1-5) for tasks
+- Due dates and completion status tracking
+- Web interface for viewing tasks
+- RESTful API for backend functionality
+
+The application is built with FastAPI and uses HTML templates for the frontend views.
 
 ## Running the Application Locally
 
@@ -124,3 +216,34 @@ module "ecs" {
 - Create an ALB module to handle load balancer resources
 - Add CloudWatch logging module
 - Implement auto-scaling for ECS services
+
+## Architecture Diagram
+
+```
++-------------------+
+|    Internet       |
++-------------------+
+        |
+        v
++-------------------+
+| Application Load  |
+|    Balancer (ALB) |
++-------------------+
+        |
+        v
++-------------------+
+| ECS Cluster       |
+| - ECS Service     |
+| - ECS Task        |
++-------------------+
+        |
+        v
++-------------------+
+| Private Subnets   |
++-------------------+
+        |
+        v
++-------------------+
+| ECR Repository    |
++-------------------+
+```
